@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Magnetic Links Return</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <style>
+        .copy-button {
+            height: 4em;
+        }
+        .page-footer{
+            background-color: #28a74547;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1030;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <nav class="navbar navbar-light bg-light">
+        <form class="form-inline" action="{% url 'home:index' %}" method="post" id="form_search">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="inputURL" class="my-1 mr-2">URL</label>
+                <input id="inputURL" name="url" style="width: 30em"
+                       class="form-control mr-sm-2"
+                       type="url" placeholder="URL" required>
+            </div>
+            <div class="form-group">
+                <label for="inputDepthLayers" class="my-1 mr-2">Depth of layers</label>
+                <input id="inputDepthLayers" name="depthLayers" style="width: 5em"
+                       class="form-control mr-2"
+                       type="number" value="1"
+                       min="1" required>
+            </div>
+
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="btn_search">Search</button>
+        </form>
+    </nav>
+
+    <div class="d-flex justify-content-center">
+        <div class="" style="margin-top: 5em;" id="loading">
+            {% load staticfiles %}
+           <img src="{% static 'img/dog_load.gif' %}" />
+        </div>
+    </div>
+
+    <div id="content">
+    {% if lConsult %}
+        {% if objReturn %}
+            <ul class="list-group list-group-flush">
+                {% for obj in objReturn %}
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <button class="copy-button btn btn-success" data-clipboard-text="{{ obj.link }}">
+                                    Copy
+                                </button>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="row">
+                                    <div class="d-inline-block text-truncate">
+                                        <h6 class="mb-1">
+                                            {{ obj.name }}
+                                        </h6>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <small class="text-muted">
+                                        Hash : {{ obj.infoHash }}
+                                    </small>
+                                </div>
+                                <div class="row">
+                                    <input class="small" value="{{ obj.link }}" readonly style="width: 100%">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-primary"
+                                          type="button"
+                                          data-toggle="collapse"
+                                          data-target="#collapse{{ obj.infoHash }}"
+                                          aria-expanded="false"
+                                          aria-controls="collapse{{ obj.infoHash }}">Trackers</button>
+                                <div class="row">
+                                  <div class="col">
+                                    <div class="collapse multi-collapse" id="collapse{{ obj.infoHash }}">
+                                       {% for tracker in obj.trackers %}
+                                           <h6>{{tracker}}</h6>
+                                       {% endfor %}
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="" id="no_links_found">
+                <h1 class="text-center" style="margin-top: 5em;" >No links found</h1>
+            </div>
+
+        {% endif %}
+    {% else %}
+        <div class="" id="no_research_done">
+            <h1 class="text-center" style="margin-top: 5em;" >No research done</h1>
+        </div>
+    {% endif %}
+    </div>
+    <footer class="page-footer" hidden>
+        <div class="text-left py-3">
+            <spam style="padding-left: 10px" >Link : {{ url }}</spam>
+            <br>
+            <spam style="padding-left: 10px">Found : {{ qtdFound }}</spam>
+        </div>
+    </footer>
+</div>
+
+<script>
+    var clipboard = new ClipboardJS('.copy-button');
+    clipboard.on('success', function (e) {
+        //console.log(e);
+    });
+
+    $(document).ready(function(){
+
+        $("#loading").hide();
+
+        $("#btn_search").click(function(){
+             var cont = 0;
+             $("#form_search input").each(function(){
+                 if($(this).val() == ""){
+                    cont++;
+                 }
+             });
+             if(cont == 0) {
+                 $("#no_research_done").hide();
+                 $("#no_links_found").hide();
+                 $("#content").hide();
+                 $("#loading").show();
+             }
+        });
+    });
+</script>
+
+</body>
+</html>
