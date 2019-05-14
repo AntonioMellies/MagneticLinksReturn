@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -51,6 +53,15 @@
 
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="btn_search">Search</button>
         </form>
+        <!-- Button trigger modal -->
+        <button type="button" style="border: 0px; background: transparent;"
+                class="align-right" data-toggle="modal" data-target="#infoModal">
+            <i class="material-icons" style=" color: #7aa936;
+                                      font-size: 2.3em;
+                                      position: fixed;
+                                      top: 0.2em;
+                                      right: 1em;">info</i>
+        </button>
     </nav>
 
     <div class="d-flex justify-content-center">
@@ -129,6 +140,48 @@
             <spam style="padding-left: 10px">Found : {{ qtdFound }}</spam>
         </div>
     </footer>
+
+    <!-- Modal -->
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Informations</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+                <div class="form-group row">
+                    <label for="inputDev3" class="col-sm-2 col-form-label">Developer</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputDev3" value="Antonio Frederico Mellies Neto" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">E-mail</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control" id="inputEmail3" value="neto-fred@live.com" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputProject3" class="col-sm-2 col-form-label">Projec Git</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputProject3" value="https://github.com/AntonioMellies/MagneticLinksReturn" readonly>
+                    </div>
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" onClick="window.open('https://github.com/AntonioMellies/MagneticLinksReturn')" class="btn btn-outline-success" data-dismiss="modal">Go to the project</button>
+            <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
 </div>
 
 <script>
